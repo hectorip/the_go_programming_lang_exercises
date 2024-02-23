@@ -33,7 +33,7 @@ func (lru *LRU) Put(key, value int) {
 	c_value := lru.Get(key)
 	if c_value != -1 {
 		lru.cache[key] = value
-		lru.queue[capacity-1] = key
+		lru.queue = append(lru.queue, key)
 	} else {
 		if lru.curretSize >= lru.capacity {
 			key_to_remove := lru.queue[0]
