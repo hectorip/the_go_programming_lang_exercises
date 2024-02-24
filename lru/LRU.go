@@ -36,16 +36,16 @@ func (lru *LRU) move_to_end(key int) {
 
 func (lru *LRU) Get(key int) int {
 	if val, ok := lru.cache[key]; ok {
+		lru.move_to_end(key)
 		return val
 	}
 	return -1
 }
 
 func (lru *LRU) Put(key, value int) {
-	c_value := lru.Get(key)
-	if c_value != -1 {
+	if _, ok := lru.cache[key]; ok {
 		lru.cache[key] = value
-		lru.queue = append(lru.queue, key)
+		lru.move_to_end(key)
 	} else {
 		if lru.curretSize >= lru.capacity {
 			key_to_remove := lru.queue[0]
@@ -54,13 +54,6 @@ func (lru *LRU) Put(key, value int) {
 			lru.curretSize--
 		}
 		lru.cache[key] = value
-		n := 0
-		for _, v := range lru.queue {
-			if v != key {
-				lru.queue[n] = v
-				n++
-			}
-		}
-		lru.queue[n] = key
+		lru.queue = append(lru.queue, key)
 	}
 }
