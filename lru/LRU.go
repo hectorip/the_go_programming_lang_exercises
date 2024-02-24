@@ -22,6 +22,18 @@ func NewLRU(capacity int) *LRU {
 	}
 }
 
+func (lru *LRU) move_to_end(key int) {
+	n := 0
+	for _, v := range lru.queue {
+		if v != key {
+			lru.queue[n] = v
+			n++
+		}
+	}
+	lru.queue = lru.queue[:n]
+	lru.queue = append(lru.queue, key)
+}
+
 func (lru *LRU) Get(key int) int {
 	if val, ok := lru.cache[key]; ok {
 		return val
